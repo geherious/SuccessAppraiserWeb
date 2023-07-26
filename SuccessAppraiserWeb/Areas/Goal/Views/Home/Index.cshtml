@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Goal";
+}
+<div class="row container-fluid align-items-center justify-content-center">
+    <div class="d-flex col align-items-start justify-content-center h-100 align-self-start" id="auto-calendar"></div>
+    <div class="goals col-md d-flex flex-column" id="goals">
+        <div class="mb-3 text-center d-flex flex-row justify-content-between">
+            <div>Goals</div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateModal">Create</button>
+            <!-- Modal -->
+            <div class="modal fade" id="CreateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create Goal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                        <form asp-area="goal" asp-controller="home" asp-action="creategoal" method="post">
+                            @model SuccessAppraiserWeb.Areas.Goal.models.GoalItem
+                          <div class="form-group">
+                            <label for="nameInput">Name</label>
+                            <input type="text" asp-for="Name" class="form-control" id="nameInput" autocomplete="off" maxlength="48" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="dayNumberInput">Number of days</label>
+                            <input type="number" asp-for="DayGoal" class="form-control" id="dayNumberInput" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="descriptionInput">Description</label>
+                            <textarea type="text" asp-for="Description" class="form-control" id="descriptionInput" maxlength="255" rows="2"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="dayStartInput">Start Day</label>
+                            <input type="date" asp-for="DateStart" class="form-control" id="dayStartInput" required>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                       </form>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+        </div>
+
+        @foreach(SuccessAppraiserWeb.Areas.Goal.models.GoalItem goal in ViewBag.Goals)
+        {
+        <div class="goal container w-100 mb-3">
+            <div class="row border-bottom justify-content-between">
+                <div class="col">@goal.Name</div>
+                <div class="col text-end">@goal.DateStart.ToShortDateString()</div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <div class="row">Day Goal: @goal.DayGoal</div>
+                    <div class="row">Day Passed: 3</div>
+                </div>
+                <div class="col-6">
+                    <div class="row-12 text-center d-flex align-items-center justify-content-center">Day States</div>
+                    <div class="row">
+                        <div class="col-lg text-center">Hard: 2</div>
+                        <div class="col-lg text-center">Avg: 2</div>
+                        <div class="col-lg text-center">Easy: 2</div>
+                    </div>
+                </div>
+                <div class="col-3">Settings</div>
+            </div>
+            <div class="row border-top">@goal.Description</div>
+        </div>
+        }
+        
+        
+
+
+    </div>
+</div>
+
+@section Scripts{
+    <script type="module" src="~/js/Calendar/Calendar.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/Calendar/goal.js" asp-append-version="true"></script>
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/Calendar.css"/>
+    <link rel="stylesheet" href="~/css/goal.css"/>
+}
