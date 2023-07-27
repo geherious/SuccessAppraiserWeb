@@ -2,6 +2,6 @@
 {
     public interface IGoalRepository
     {
-
+        void Delete(int Id);
     }
 }

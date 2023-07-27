@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SuccessAppraiserWeb.Areas.Identity.models;
 using SuccessAppraiserWeb.Data;
+using SuccessAppraiserWeb.Data.Goal.Interfaces;
+using SuccessAppraiserWeb.Data.Goal.Repositories;
 using SuccessAppraiserWeb.Data.Identity;
 
 namespace SuccessAppraiserWeb
@@ -55,6 +57,8 @@ namespace SuccessAppraiserWeb
                 options.SlidingExpiration = true;
             });
 
+            AddDataServices(builder.Services);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -88,6 +92,11 @@ namespace SuccessAppraiserWeb
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+        }
+
+        public static void AddDataServices(IServiceCollection services)
+        {
+            services.AddScoped<IGoalRepository, GoalRepository>();
         }
     }
 }
