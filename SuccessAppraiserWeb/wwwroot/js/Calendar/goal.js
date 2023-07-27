@@ -51,6 +51,8 @@ let goalManager = {
             let body = document.createElement("div");
             body.className = "row";
 
+            //Body.DateInfo
+
             let dateInfo = document.createElement("div");
             dateInfo.className = "col-3"
             body.appendChild(dateInfo);
@@ -62,15 +64,58 @@ let goalManager = {
 
             let dayPassedInfo = document.createElement("div");
             dayPassedInfo.className = "row";
-            let dateDiff = new Date(new Date() - new Date(obj.DateStart));
-            dayPassedInfo.innerText = "Day Passed: " + dateDiff.getDate();
+            let dateDiff = this.getDateDiffDay(new Date(), new Date(obj.DateStart));
+            dayPassedInfo.innerText = "Day Passed: " + dateDiff;
             dateInfo.appendChild(dayPassedInfo);
+
+            //Body.DayStat
+
+            let dayStat = document.createElement("div");
+            dayStat.className = "col-6"
+            body.appendChild(dayStat);
+
+            let dayStatText = document.createElement("div");
+            dayStatText.className = "row-12 text-center d-flex align-items-center justify-content-center";
+            dayStatText.innerText = "Day States";
+            dayStat.appendChild(dayStatText);
+
+            let stats = document.createElement("div");
+            stats.className = "row";
+            dayStat.appendChild(stats);
+
+            let statDayInfo = ["Hard", "Avg", "Easy"];
+            statDayInfo.forEach(function (entry) {
+                let lvl = document.createElement("div");
+                lvl.className = "col-lg text-center";
+                lvl.innerText = entry + ":" + "0";
+                stats.appendChild(lvl);
+            })
+
+            //Body.Settings
+
+            let settings = document.createElement("div");
+            settings.className = "col-3";
+            settings.innerText = "Setting";
+            body.appendChild(settings);
+
+            //Body.Description
+            let desc = document.createElement("div");
+            desc.className = "row border-top";
+            desc.innerText = obj.Description;
+            body.appendChild(desc);
+
 
             child.appendChild(body);    
 
             container.appendChild(child);
         }
     },
+
+    getDateDiffDay: function (date1, date2) {
+        let diff = Math.abs(date1.getTime() - date2.getTime());
+        let days = Math.ceil(diff / (1000 * 3600 * 24));
+        return days;
+    }
 }
 await goalManager.getJson();
 goalManager.createGoalList();

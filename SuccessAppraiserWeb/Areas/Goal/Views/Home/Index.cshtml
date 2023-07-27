@@ -46,32 +46,6 @@
             </div>
 
         </div>
-
-        @foreach(SuccessAppraiserWeb.Areas.Goal.models.GoalItem goal in ViewBag.Goals)
-        {
-        <div class="goal container w-100 mb-3">
-            <div class="row border-bottom justify-content-between">
-                <div class="col">@goal.Name</div>
-                <div class="col text-end">@goal.DateStart.ToShortDateString()</div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <div class="row">Day Goal: @goal.DayGoal</div>
-                    <div class="row">Day Passed: 3</div>
-                </div>
-                <div class="col-6">
-                    <div class="row-12 text-center d-flex align-items-center justify-content-center">Day States</div>
-                    <div class="row">
-                        <div class="col-lg text-center">Hard: 2</div>
-                        <div class="col-lg text-center">Avg: 2</div>
-                        <div class="col-lg text-center">Easy: 2</div>
-                    </div>
-                </div>
-                <div class="col-3">Settings</div>
-            </div>
-            <div class="row border-top">@goal.Description</div>
-        </div>
-        }
         
         
 
