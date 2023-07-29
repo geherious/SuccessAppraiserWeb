@@ -1,5 +1,6 @@
 ﻿using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
+using System.Security.Claims;
 
 namespace SuccessAppraiserWeb.Data.Goal.Repositories
 {
@@ -23,6 +24,15 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
             {
                 throw new Exception("Goal with given Id doesn't exist");
             }
+        }
+
+        public List<GoalItem>? GetGoalsByUser(ClaimsPrincipal claimsPrincipal)
+        {
+            if (claimsPrincipal.Identity == null) { return null; }
+
+            return (from g in _dbContext.Goals
+                    where g.User.UserName == claimsPrincipal.Identity.Name
+                    select g).ToList();
         }
     }
 }

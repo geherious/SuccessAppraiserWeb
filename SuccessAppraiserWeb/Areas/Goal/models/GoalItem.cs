@@ -24,7 +24,6 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
 
         public List<GoalDate>? Dates { get; set; }
         [Required]
-        [JsonIgnore]
         public ApplicationUser User { get; set; }
     }
 }

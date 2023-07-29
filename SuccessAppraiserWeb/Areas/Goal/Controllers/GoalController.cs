@@ -31,7 +31,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
                 ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 WriteIndented = true
             };
-            return new JsonResult(_userManager.GetUserGoals(HttpContext.User), options);
+            return new JsonResult(_goalRepository.GetGoalsByUser(HttpContext.User), options);
         }
 
         [Authorize]
@@ -39,8 +39,8 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         public IActionResult DeleteGoal(int Id)
         {
             Console.WriteLine(Id);
-            var filtered = _userManager.GetUserGoals(HttpContext.User).Where(x => x.Id == Id).ToList();
-            if (filtered.Count == 1)
+            var filtered = _goalRepository.GetGoalsByUser(HttpContext.User)?.Where(x => x.Id == Id).ToList();
+            if (filtered?.Count == 1)
             {
                 _goalRepository.Delete(Id);
                 return Ok();

@@ -16,15 +16,5 @@ namespace SuccessAppraiserWeb.Data.Identity
             this._dbContext = dbContext;
         }
 
-        public List<GoalItem>? GetUserGoals(ClaimsPrincipal claimsPrincipal)
-        {
-
-            if (claimsPrincipal.Identity == null) { return null; }
-
-            return (from u in _dbContext.Users?.Include(u => u.Goals)
-                    where u.UserName
-                    == claimsPrincipal.Identity.Name
-                    select u.Goals).FirstOrDefault();
-        }
     }
 }

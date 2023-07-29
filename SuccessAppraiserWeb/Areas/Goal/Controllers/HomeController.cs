@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Areas.Identity.models;
 using SuccessAppraiserWeb.Data;
+using SuccessAppraiserWeb.Data.Goal.Interfaces;
 using SuccessAppraiserWeb.Data.Identity;
 using System.Diagnostics;
 
@@ -27,9 +28,6 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var goals = _userManager.GetUserGoals(HttpContext.User);
-
-            ViewBag.Goals = goals;
             return View();
         }
 
@@ -47,10 +45,6 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
             model.User = user;
             _dbContext.Goals.Add(model);
             _dbContext.SaveChanges();
-
-
-            var goals = _userManager.GetUserGoals(HttpContext.User);
-            ViewBag.Goals = goals;
 
             return View("Index");
             
