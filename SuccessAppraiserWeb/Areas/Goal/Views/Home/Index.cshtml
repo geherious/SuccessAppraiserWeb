@@ -2,7 +2,8 @@
     ViewData["Title"] = "Goal";
 }
 <div class="row container-fluid align-items-center justify-content-center">
-    <div class="d-flex col align-items-start justify-content-center h-100 align-self-start" id="auto-calendar"></div>
+    <div class="auto-jsCalendar material-theme d-flex col align-items-start justify-content-center h-100 align-self-start"
+    data-month-format="##/YYYY" data-day-format="DD" data-firstDayOfTheWeek="2"></div>
     <div class="goals col-md d-flex flex-column" id="goals">
         <div class="mb-3 text-center d-flex flex-row justify-content-between">
             <div>Goals</div>
@@ -54,10 +55,10 @@
 </div>
 
 @section Scripts{
-    <script type="module" src="~/js/Calendar/Calendar.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/Calendar/jsCalendar.js" asp-append-version="true"></script>
     <script type="module" src="~/js/Calendar/goal.js" asp-append-version="true"></script>
 }
 @section Styles{
-    <link rel="stylesheet" href="~/css/Calendar.css"/>
+    <link rel="stylesheet" href="~/css/jsCalendar.css"/>
     <link rel="stylesheet" href="~/css/goal.css"/>
 }

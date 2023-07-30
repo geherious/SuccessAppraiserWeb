@@ -1,10 +1,15 @@
-﻿import { caleandar } from './Calendar.js';
+﻿//import { caleandar } from './Calendar.js';
 
-function autoCreate() {
-    var el = document.getElementById("auto-calendar");
-    caleandar(el, [], {})
-}
-autoCreate();
+//function autoCreate() {
+//    var el = document.getElementById("auto-calendar");
+//    var events = [
+//        { 'Date': new Date(2023, 6, 1), 'Title': 'Doctor appointment at 3:25pm.', 'Link': function () { console.log('Reminder!'); } },
+//        { 'Date': new Date(2023, 6, 7), 'Title': 'New Garfield movie comes out!', 'Link': function () { alert("Better not miss the movie!"); } },
+//        { 'Date': new Date(2023, 6, 11), 'Title': '25 year anniversary', 'Link': function () { console.debug(document.getElementById('foo')); } },
+//    ];
+//    caleandar(el, events, {})
+//}
+//autoCreate();
 
 
 let goalManager = {
