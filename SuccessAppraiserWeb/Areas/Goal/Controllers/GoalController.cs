@@ -38,14 +38,8 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         [HttpPost]
         public IActionResult DeleteGoal(int Id)
         {
-            Console.WriteLine(Id);
-            var filtered = _goalRepository.GetGoalsByUser(HttpContext.User)?.Where(x => x.Id == Id).ToList();
-            if (filtered?.Count == 1)
-            {
-                _goalRepository.Delete(Id);
-                return Ok();
-            }
-            return NotFound();
+            _goalRepository.Delete(HttpContext.User, Id);
+            return Ok();
         }
     }
 }

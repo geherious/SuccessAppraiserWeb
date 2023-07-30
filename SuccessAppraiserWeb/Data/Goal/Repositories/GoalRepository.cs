@@ -14,16 +14,27 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
         }
         public void Delete(int Id)
         {
-            GoalItem? goal =  _dbContext.Goals.FirstOrDefault(g => g.Id == Id);
+            GoalItem? goal =  _dbContext.Goals.Find(Id);
             if (goal != null)
             {
                 _dbContext.Goals.Remove(goal);
                 _dbContext.SaveChanges();
             }
-            else
+        }
+
+        public void Delete(ClaimsPrincipal claimsPrincipal, int Id)
+        {
+            List<GoalItem>? goals = GetGoalsByUser(claimsPrincipal);
+            var filtered = (from g in _dbContext.Goals
+                            where g.Id == Id
+                            select g).ToList();
+
+            if (filtered.Count == 1)
             {
-                throw new Exception("Goal with given Id doesn't exist");
+                _dbContext.Goals.Remove(filtered.First());
+                _dbContext.SaveChanges();
             }
+
         }
 
         public List<GoalItem>? GetGoalsByUser(ClaimsPrincipal claimsPrincipal)

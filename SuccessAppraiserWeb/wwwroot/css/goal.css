@@ -13,3 +13,7 @@
 .form-group{
     margin-bottom: 10px;
 }
+
+.goal-selected {
+    background-color: #e3e3e3;
+}

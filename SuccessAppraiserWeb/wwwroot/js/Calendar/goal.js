@@ -8,20 +8,24 @@ autoCreate();
 
 
 let goalManager = {
-    json: null,
+    goals: null,
     getGoalUrl: "/api/goal/usergoals",
     deleteGoalUrl: "/api/goal/deletegoal",
+    selected: null,
 
     getJson: async function () {
-        if (this.json != null) return null;
+        if (this.goals != null) return null;
         let response = await fetch(this.getGoalUrl);
 
         if (response.ok) {
-            this.json = await response.json();
+            this.goals = await response.json();
+            //if (this.goals.length != 0) {
+            //    continue;
+            //}
         } else {
-            alert("Ошибка HTTP: " + response.status);
+            alert("Ошибка получения списка: " + response.status);
         }
-        console.log(this.json)
+        console.log(this.goals)
     },
 
     createGoalList: function () {
@@ -29,11 +33,12 @@ let goalManager = {
         for (let i = 1; i < container.childElementCount; i++) {
             container.removeChild(container.lastChild);
         }
-        for (let i = 0; i < this.json.length; i++) {
-            let obj = this.json[i];
+        for (let i = 0; i < this.goals.length; i++) {
+            let obj = this.goals[i];
             let child = document.createElement("div");
             child.className = "goal container w-100 mb-3";
             child.id = obj.Id;
+            child.onclick = this.selectGoalOnCLick;
             container.appendChild(child);
 
             // Header
@@ -125,7 +130,9 @@ let goalManager = {
             body.appendChild(desc);
 
 
-            child.appendChild(body);    
+            child.appendChild(body);
+
+            this.buildGoal(0);
 
         }
     },
@@ -152,6 +159,30 @@ let goalManager = {
         else {
             alert("Ошибка удаления");
         }
+        goalManager.selected = null;
+        goalManager.buildGoal(0);
+    },
+
+    buildGoal: function (index) {
+        if (index - 1 >= this.goals.length) return;
+        if (index == 0) {
+            this.buildGoal(1);
+            return;
+        }
+
+        var container = document.getElementById("goals");
+        if (this.selected != null) this.selected.classList.remove("goal-selected");
+        this.selected = container.children[index];
+        this.selected.classList.add("goal-selected");
+
+    },
+
+    selectGoalOnCLick: function (e) {
+        const child = e.target.closest('.goal');
+        var parent = child.parentNode;
+        var index = Array.prototype.indexOf.call(parent.children, child);
+
+        goalManager.buildGoal(index);
     },
 
 }

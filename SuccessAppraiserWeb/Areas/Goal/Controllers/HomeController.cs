@@ -46,7 +46,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
             _dbContext.Goals.Add(model);
             _dbContext.SaveChanges();
 
-            return View("Index");
+            return RedirectToActionPermanent("Index");
             
 
         }
