@@ -26,7 +26,7 @@
  *
  */
 
-var jsCalendar = (function(){
+export var jsCalendar = (function () {
 
     // Constructor
     function JsCalendar(){
@@ -128,7 +128,8 @@ var jsCalendar = (function(){
         var obj = {
             target : null,
             date : null,
-            options : {}
+            options: {},
+            goalId: null,
         };
 
         // If no arguments

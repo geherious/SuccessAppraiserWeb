@@ -16,7 +16,7 @@ namespace SuccessAppraiserWeb.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -166,9 +166,6 @@ namespace SuccessAppraiserWeb.Migrations
                     b.Property<int>("GoalId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GoalStateId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StateId")
                         .HasColumnType("int");
 
@@ -176,7 +173,7 @@ namespace SuccessAppraiserWeb.Migrations
 
                     b.HasIndex("GoalId");
 
-                    b.HasIndex("GoalStateId");
+                    b.HasIndex("StateId");
 
                     b.ToTable("GoalDates");
                 });
@@ -218,6 +215,10 @@ namespace SuccessAppraiserWeb.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -354,15 +355,15 @@ namespace SuccessAppraiserWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalState", "GoalState")
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalState", "State")
                         .WithMany()
-                        .HasForeignKey("GoalStateId")
+                        .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Goal");
 
-                    b.Navigation("GoalState");
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalItem", b =>

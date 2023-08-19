@@ -19,6 +19,7 @@ namespace SuccessAppraiserWeb
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString,
                 new MySqlServerVersion(new Version(8, 0, 33))));
+            //options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

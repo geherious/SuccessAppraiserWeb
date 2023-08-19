@@ -1,4 +1,5 @@
-﻿using SuccessAppraiserWeb.Areas.Goal.models;
+﻿using Microsoft.EntityFrameworkCore;
+using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
 using System.Security.Claims;
 
@@ -43,7 +44,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
 
             return (from g in _dbContext.Goals
                     where g.User.UserName == claimsPrincipal.Identity.Name
-                    select g).ToList();
+                    select g).Include(g => g.Dates).ThenInclude(d => d.State).ToList();
         }
     }
 }

@@ -9,6 +9,9 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set; }
+        [Required]
+        [RegularExpression(@"(?i)[0-9A-Z]{6}")]
+        public string? Color { get; set; }
     }
 }

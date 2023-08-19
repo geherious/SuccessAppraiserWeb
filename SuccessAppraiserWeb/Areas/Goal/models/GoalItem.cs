@@ -12,7 +12,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         public int Id { get; set; }
         [Required]
         [MaxLength(48)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [MaxLength(255)]
         public string? Description { get; set; }
         [Required]
@@ -24,6 +24,6 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
 
         public List<GoalDate>? Dates { get; set; }
         [Required]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

@@ -14,11 +14,13 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
 
         [Required]
         public int StateId { get; set; }
-        public GoalState GoalState { get; set; }
+        [Required]
+        public GoalState? State { get; set; }
 
         [Required]
         public int GoalId { get; set; }
-        public GoalItem Goal { get; set; }
+        [Required]
+        public GoalItem? Goal { get; set; }
 
     }
 }

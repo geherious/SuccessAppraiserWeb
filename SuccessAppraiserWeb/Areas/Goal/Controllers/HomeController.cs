@@ -28,6 +28,14 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         [Authorize]
         public IActionResult Index()
         {
+            //GoalItem goal = _dbContext.Goals.Find(3);
+            //GoalDate goalDate = new GoalDate();
+            //goalDate.Goal = goal;
+            //goalDate.State = _dbContext.GoalStates.Find(1);
+            //goalDate.Date = new DateTime(2023, 7, 25);
+            //_dbContext.Add(goalDate);
+            //_dbContext.SaveChanges();
+
             return View();
         }
 

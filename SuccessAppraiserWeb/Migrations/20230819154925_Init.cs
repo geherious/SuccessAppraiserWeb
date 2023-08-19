@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SuccessAppraiserWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class Start : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,6 +76,8 @@ namespace SuccessAppraiserWeb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Color = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -248,15 +250,14 @@ namespace SuccessAppraiserWeb.Migrations
                     Comment = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StateId = table.Column<int>(type: "int", nullable: false),
-                    GoalStateId = table.Column<int>(type: "int", nullable: false),
                     GoalId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GoalDates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GoalDates_GoalStates_GoalStateId",
-                        column: x => x.GoalStateId,
+                        name: "FK_GoalDates_GoalStates_StateId",
+                        column: x => x.StateId,
                         principalTable: "GoalStates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -312,9 +313,9 @@ namespace SuccessAppraiserWeb.Migrations
                 column: "GoalId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoalDates_GoalStateId",
+                name: "IX_GoalDates_StateId",
                 table: "GoalDates",
-                column: "GoalStateId");
+                column: "StateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Goals_UserId",
