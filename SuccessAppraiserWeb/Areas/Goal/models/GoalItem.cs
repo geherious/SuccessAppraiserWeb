@@ -16,14 +16,23 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         [MaxLength(255)]
         public string? Description { get; set; }
         [Required]
-        public int DayGoal { get; set; }
+        public int DaysNumber { get; set; }
 
         [Required]
         [Column(TypeName = "Date")]
         public DateTime DateStart { get; set; }
+        public List<GoalDate> Dates { get; set; } = new List<GoalDate>();
 
-        public List<GoalDate>? Dates { get; set; }
         [Required]
         public ApplicationUser? User { get; set; }
+        [Required]
+        public int? UserId { get; set; }
+
+        [Required]
+        public int TemplateId { get; set; }
+        [Required]
+        public GoalTemplate? Template { get; set; }
+
+
     }
 }

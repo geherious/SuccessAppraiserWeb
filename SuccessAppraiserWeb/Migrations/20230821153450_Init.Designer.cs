@@ -11,7 +11,7 @@ using SuccessAppraiserWeb.Data;
 namespace SuccessAppraiserWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230819154925_Init")]
+    [Migration("20230821153450_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -21,6 +21,21 @@ namespace SuccessAppraiserWeb.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("GoalStateGoalTemplate", b =>
+                {
+                    b.Property<int>("StatesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplatesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StatesId", "TemplatesId");
+
+                    b.HasIndex("TemplatesId");
+
+                    b.ToTable("GoalStateGoalTemplate");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -202,13 +217,17 @@ namespace SuccessAppraiserWeb.Migrations
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
 
-                    b.Property<string>("UserId")
+                    b.Property<int?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Goals");
                 });
@@ -233,6 +252,25 @@ namespace SuccessAppraiserWeb.Migrations
                         .IsUnique();
 
                     b.ToTable("GoalStates");
+                });
+
+            modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("GoalTemplate");
                 });
 
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", b =>
@@ -297,6 +335,21 @@ namespace SuccessAppraiserWeb.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("GoalStateGoalTemplate", b =>
+                {
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalState", null)
+                        .WithMany()
+                        .HasForeignKey("StatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("TemplatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -373,9 +426,18 @@ namespace SuccessAppraiserWeb.Migrations
                 {
                     b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
                         .WithMany("Goals")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", b =>
+                {
+                    b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });

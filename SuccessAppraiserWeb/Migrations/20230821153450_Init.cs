@@ -225,18 +225,40 @@ namespace SuccessAppraiserWeb.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DayGoal = table.Column<int>(type: "int", nullable: false),
                     DateStart = table.Column<DateTime>(type: "Date", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Goals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Goals_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Goals_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "GoalTemplate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GoalTemplate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GoalTemplate_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -265,6 +287,31 @@ namespace SuccessAppraiserWeb.Migrations
                         name: "FK_GoalDates_Goals_GoalId",
                         column: x => x.GoalId,
                         principalTable: "Goals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "GoalStateGoalTemplate",
+                columns: table => new
+                {
+                    StatesId = table.Column<int>(type: "int", nullable: false),
+                    TemplatesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GoalStateGoalTemplate", x => new { x.StatesId, x.TemplatesId });
+                    table.ForeignKey(
+                        name: "FK_GoalStateGoalTemplate_GoalStates_StatesId",
+                        column: x => x.StatesId,
+                        principalTable: "GoalStates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GoalStateGoalTemplate_GoalTemplate_TemplatesId",
+                        column: x => x.TemplatesId,
+                        principalTable: "GoalTemplate",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -318,15 +365,25 @@ namespace SuccessAppraiserWeb.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Goals_UserId",
+                name: "IX_Goals_UserId1",
                 table: "Goals",
-                column: "UserId");
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GoalStateGoalTemplate_TemplatesId",
+                table: "GoalStateGoalTemplate",
+                column: "TemplatesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GoalStates_Name",
                 table: "GoalStates",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GoalTemplate_UserId1",
+                table: "GoalTemplate",
+                column: "UserId1");
         }
 
         /// <inheritdoc />
@@ -351,13 +408,19 @@ namespace SuccessAppraiserWeb.Migrations
                 name: "GoalDates");
 
             migrationBuilder.DropTable(
+                name: "GoalStateGoalTemplate");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Goals");
 
             migrationBuilder.DropTable(
                 name: "GoalStates");
 
             migrationBuilder.DropTable(
-                name: "Goals");
+                name: "GoalTemplate");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
