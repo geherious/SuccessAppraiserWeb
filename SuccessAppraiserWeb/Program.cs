@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using SuccessAppraiserWeb.Areas.Identity.models;
 using SuccessAppraiserWeb.Data;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
@@ -13,6 +14,14 @@ namespace SuccessAppraiserWeb
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            builder.Host.UseSerilog((ctx, lc) => lc
+            .WriteTo.Console());
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -91,7 +100,7 @@ namespace SuccessAppraiserWeb
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.Seed();
             app.Run();
         }
 

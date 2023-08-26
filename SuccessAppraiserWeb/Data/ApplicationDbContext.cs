@@ -10,6 +10,7 @@ namespace SuccessAppraiserWeb.Data
         public DbSet<GoalItem> Goals { get; set; }
         public DbSet<GoalDate> GoalDates { get; set; }
         public DbSet<GoalState> GoalStates { get; set; }
+        public DbSet<GoalTemplate> GoalTemplates { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

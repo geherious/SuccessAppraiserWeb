@@ -202,7 +202,7 @@ namespace SuccessAppraiserWeb.Migrations
                     b.Property<DateTime>("DateStart")
                         .HasColumnType("Date");
 
-                    b.Property<int>("DayGoal")
+                    b.Property<int>("DaysNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -214,17 +214,13 @@ namespace SuccessAppraiserWeb.Migrations
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
 
-                    b.Property<int?>("UserId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Goals");
                 });
@@ -257,17 +253,18 @@ namespace SuccessAppraiserWeb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("GoalTemplate");
+                    b.ToTable("GoalTemplates");
                 });
 
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", b =>
@@ -423,7 +420,7 @@ namespace SuccessAppraiserWeb.Migrations
                 {
                     b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
                         .WithMany("Goals")
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -434,7 +431,7 @@ namespace SuccessAppraiserWeb.Migrations
                 {
                     b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
