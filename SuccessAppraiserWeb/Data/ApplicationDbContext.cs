@@ -16,5 +16,13 @@ namespace SuccessAppraiserWeb.Data
         {
             Database.EnsureCreated();
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<GoalTemplate>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
+            base.OnModelCreating(builder);
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
 {
-    public struct TemplateWithStates
+    public class TemplateWithStates
     {
         public string Name { get; set; }
-        public List<Dictionary<string, string>> States { get; set; }
+        public Dictionary<string, string> States { get; set; }
     }
 }

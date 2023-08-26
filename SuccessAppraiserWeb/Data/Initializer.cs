@@ -1,4 +1,5 @@
-﻿using SuccessAppraiserWeb.Data.Goal.Initialize;
+﻿using Serilog;
+using SuccessAppraiserWeb.Data.Goal.Initialize;
 using SuccessAppraiserWeb.Data.Goal.Initialize.Templates;
 
 namespace SuccessAppraiserWeb.Data
@@ -13,8 +14,10 @@ namespace SuccessAppraiserWeb.Data
 
                 try
                 {
+                    Log.Debug("Seeding");
                     context.Database.EnsureCreated();
                     TemplateWithStatesInitializer.Initialize(context);
+                    context.SaveChanges();
                 }
                 catch (Exception)
                 {

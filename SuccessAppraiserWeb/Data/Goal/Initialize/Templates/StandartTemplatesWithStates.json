@@ -1,7 +1,7 @@
 [
   {
-    "name": "Habbit",
-    "states": {
+    "Name": "Habbit",
+    "States": {
       "Easy": "79EF82",
       "Normal": "F5FF62",
       "Hard": "FF6462",

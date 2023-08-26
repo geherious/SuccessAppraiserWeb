@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Mono.TextTemplating;
+using Serilog;
 using SuccessAppraiserWeb.Areas.Goal.models;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -38,7 +39,25 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
                 List<TemplateWithStates>? templateWithStates = JsonSerializer.Deserialize<List<TemplateWithStates>>(json);
                 if (templateWithStates != null)
                 {
-                    Console.WriteLine("Success");
+                        foreach (TemplateWithStates tws in templateWithStates)
+                        {
+                            if (!context.GoalTemplates.Where(e => e.Name == tws.Name).Any())
+                            {
+                                GoalTemplate template = new GoalTemplate() { Name = tws.Name };
+                                List<GoalState> goalStates = new List<GoalState>();
+                                foreach (KeyValuePair<string, string> keyValue in tws.States)
+                                {
+                                    GoalState state = new GoalState();
+                                    state.Name = keyValue.Key;
+                                    state.Color = keyValue.Value;
+                                    goalStates.Add(state);
+
+                                }
+                                template.States.AddRange(goalStates);
+                                context.GoalTemplates.Add(template);
+                                context.GoalStates.AddRange(goalStates);
+                            }
+                        }
                 }
             }
 
