@@ -13,38 +13,28 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
         {
             _dbContext = dbContext;
         }
-        public void Delete(int Id)
-        {
-            GoalItem? goal =  _dbContext.Goals.Find(Id);
-            if (goal != null)
-            {
-                _dbContext.Goals.Remove(goal);
-                _dbContext.SaveChanges();
-            }
-        }
 
-        public void DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id)
+        async public Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int id)
         {
-            List<GoalItem>? goals = GetGoalsByUser(claimsPrincipal);
-            var filtered = (from g in _dbContext.Goals
-                            where g.Id == Id
-                            select g).ToList();
+            List<GoalItem> goals = await GetGoalsByUserAsync(claimsPrincipal);
 
-            if (filtered.Count == 1)
+            var filtered = await _dbContext.Goals.FindAsync(id);
+
+            if (filtered != null)
             {
-                _dbContext.Goals.Remove(filtered.First());
-                _dbContext.SaveChanges();
+                _dbContext.Goals.Remove(filtered);
+                await _dbContext.SaveChangesAsync();
             }
 
         }
 
-        public List<GoalItem>? GetGoalsByUser(ClaimsPrincipal claimsPrincipal)
+        async public Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal)
         {
-            if (claimsPrincipal.Identity == null) { return null; }
+            if (claimsPrincipal.Identity == null) { return new List<GoalItem>(); }
 
-            return (from g in _dbContext.Goals
+            return await (from g in _dbContext.Goals
                     where g.User.UserName == claimsPrincipal.Identity.Name
-                    select g).Include(g => g.Dates).ThenInclude(d => d.State).ToList();
+                    select g).Include(g => g.Dates).ThenInclude(d => d.State).ToListAsync();
         }
     }
 }

@@ -24,21 +24,22 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         }
 
         [Authorize]
-        public IActionResult UserGoals()
+        public async Task<IActionResult> UserGoals()
         {
             JsonSerializerOptions options = new()
             {
                 ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 WriteIndented = true
             };
-            return new JsonResult(_goalRepository.GetGoalsByUser(HttpContext.User), options);
+            var data = await _goalRepository.GetGoalsByUserAsync(HttpContext.User);
+            return new JsonResult(data, options);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult DeleteGoal(int Id)
+        async public Task<IActionResult> DeleteGoal(int Id)
         {
-            _goalRepository.DeleteByUser(HttpContext.User, Id);
+            await _goalRepository.DeleteByUser(HttpContext.User, Id);
             return Ok();
         }
     }
