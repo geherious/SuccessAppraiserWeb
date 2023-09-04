@@ -26,10 +26,10 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         [Required]
         public ApplicationUser? User { get; set; }
 
-        //[Required]
-        //public int? TemplateId { get; set; }
-        //[Required]
-        //public GoalTemplate? Template { get; set; }
+        [Required]
+        public int? TemplateId { get; set; }
+        [Required]
+        public GoalTemplate? Template { get; set; }
 
 
     }

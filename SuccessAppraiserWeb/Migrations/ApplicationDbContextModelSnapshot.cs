@@ -19,7 +19,7 @@ namespace SuccessAppraiserWeb.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("GoalStateGoalTemplate", b =>
+            modelBuilder.Entity("DayStateGoalTemplate", b =>
                 {
                     b.Property<int>("StatesId")
                         .HasColumnType("int");
@@ -31,7 +31,7 @@ namespace SuccessAppraiserWeb.Migrations
 
                     b.HasIndex("TemplatesId");
 
-                    b.ToTable("GoalStateGoalTemplate");
+                    b.ToTable("DayStateGoalTemplate");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -166,6 +166,25 @@ namespace SuccessAppraiserWeb.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.DayState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GoalStates");
+                });
+
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalDate", b =>
                 {
                     b.Property<int>("Id")
@@ -214,37 +233,21 @@ namespace SuccessAppraiserWeb.Migrations
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
 
+                    b.Property<int?>("TemplateId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TemplateId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Goals");
-                });
-
-            modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("GoalStates");
                 });
 
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", b =>
@@ -255,12 +258,15 @@ namespace SuccessAppraiserWeb.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -331,9 +337,9 @@ namespace SuccessAppraiserWeb.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("GoalStateGoalTemplate", b =>
+            modelBuilder.Entity("DayStateGoalTemplate", b =>
                 {
-                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalState", null)
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.DayState", null)
                         .WithMany()
                         .HasForeignKey("StatesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,7 +411,7 @@ namespace SuccessAppraiserWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalState", "State")
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.DayState", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -418,11 +424,19 @@ namespace SuccessAppraiserWeb.Migrations
 
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalItem", b =>
                 {
+                    b.HasOne("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", "Template")
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
                         .WithMany("Goals")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Template");
 
                     b.Navigation("User");
                 });
@@ -430,7 +444,7 @@ namespace SuccessAppraiserWeb.Migrations
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate", b =>
                 {
                     b.HasOne("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Templates")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -444,6 +458,8 @@ namespace SuccessAppraiserWeb.Migrations
             modelBuilder.Entity("SuccessAppraiserWeb.Areas.Identity.models.ApplicationUser", b =>
                 {
                     b.Navigation("Goals");
+
+                    b.Navigation("Templates");
                 });
 #pragma warning restore 612, 618
         }

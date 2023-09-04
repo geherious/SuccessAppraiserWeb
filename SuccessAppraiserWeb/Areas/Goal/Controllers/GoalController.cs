@@ -38,7 +38,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         [HttpPost]
         public IActionResult DeleteGoal(int Id)
         {
-            _goalRepository.Delete(HttpContext.User, Id);
+            _goalRepository.DeleteByUser(HttpContext.User, Id);
             return Ok();
         }
     }

@@ -5,6 +5,7 @@ namespace SuccessAppraiserWeb.Areas.Identity.models
 {
     public class ApplicationUser : IdentityUser
     {
-        public List<GoalItem> Goals { get; set; } = new List<GoalItem>(); 
+        public List<GoalItem> Goals { get; set; } = new List<GoalItem>();
+        public List<GoalTemplate> Templates { get; set; } = new List<GoalTemplate>();
     }
 }

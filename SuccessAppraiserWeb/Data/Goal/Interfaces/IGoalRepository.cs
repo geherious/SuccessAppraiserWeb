@@ -7,7 +7,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Interfaces
     {
         void Delete(int Id);
 
-        void Delete(ClaimsPrincipal claimsPrincipal, int Id);
+        void DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id);
 
         List<GoalItem>? GetGoalsByUser(ClaimsPrincipal claimsPrincipal);
     }

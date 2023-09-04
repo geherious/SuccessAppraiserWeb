@@ -23,7 +23,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
             }
         }
 
-        public void Delete(ClaimsPrincipal claimsPrincipal, int Id)
+        public void DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id)
         {
             List<GoalItem>? goals = GetGoalsByUser(claimsPrincipal);
             var filtered = (from g in _dbContext.Goals

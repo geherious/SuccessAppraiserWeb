@@ -15,7 +15,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         [Required]
         public int StateId { get; set; }
         [Required]
-        public GoalState? State { get; set; }
+        public DayState? State { get; set; }
 
         [Required]
         public int GoalId { get; set; }

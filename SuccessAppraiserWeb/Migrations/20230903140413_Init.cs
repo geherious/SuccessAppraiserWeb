@@ -75,7 +75,7 @@ namespace SuccessAppraiserWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Color = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -214,39 +214,12 @@ namespace SuccessAppraiserWeb.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Goals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(48)", maxLength: 48, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DaysNumber = table.Column<int>(type: "int", nullable: false),
-                    DateStart = table.Column<DateTime>(type: "Date", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Goals", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Goals_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "GoalTemplates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -259,6 +232,65 @@ namespace SuccessAppraiserWeb.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DayStateGoalTemplate",
+                columns: table => new
+                {
+                    StatesId = table.Column<int>(type: "int", nullable: false),
+                    TemplatesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DayStateGoalTemplate", x => new { x.StatesId, x.TemplatesId });
+                    table.ForeignKey(
+                        name: "FK_DayStateGoalTemplate_GoalStates_StatesId",
+                        column: x => x.StatesId,
+                        principalTable: "GoalStates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DayStateGoalTemplate_GoalTemplates_TemplatesId",
+                        column: x => x.TemplatesId,
+                        principalTable: "GoalTemplates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Goals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(48)", maxLength: 48, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DaysNumber = table.Column<int>(type: "int", nullable: false),
+                    DateStart = table.Column<DateTime>(type: "Date", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TemplateId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Goals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Goals_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Goals_GoalTemplates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "GoalTemplates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -287,31 +319,6 @@ namespace SuccessAppraiserWeb.Migrations
                         name: "FK_GoalDates_Goals_GoalId",
                         column: x => x.GoalId,
                         principalTable: "Goals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "GoalStateGoalTemplate",
-                columns: table => new
-                {
-                    StatesId = table.Column<int>(type: "int", nullable: false),
-                    TemplatesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GoalStateGoalTemplate", x => new { x.StatesId, x.TemplatesId });
-                    table.ForeignKey(
-                        name: "FK_GoalStateGoalTemplate_GoalStates_StatesId",
-                        column: x => x.StatesId,
-                        principalTable: "GoalStates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GoalStateGoalTemplate_GoalTemplates_TemplatesId",
-                        column: x => x.TemplatesId,
-                        principalTable: "GoalTemplates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -355,6 +362,11 @@ namespace SuccessAppraiserWeb.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DayStateGoalTemplate_TemplatesId",
+                table: "DayStateGoalTemplate",
+                column: "TemplatesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GoalDates_GoalId",
                 table: "GoalDates",
                 column: "GoalId");
@@ -365,18 +377,18 @@ namespace SuccessAppraiserWeb.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Goals_TemplateId",
+                table: "Goals",
+                column: "TemplateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Goals_UserId",
                 table: "Goals",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoalStateGoalTemplate_TemplatesId",
-                table: "GoalStateGoalTemplate",
-                column: "TemplatesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GoalStates_Name",
-                table: "GoalStates",
+                name: "IX_GoalTemplates_Name",
+                table: "GoalTemplates",
                 column: "Name",
                 unique: true);
 
@@ -405,19 +417,19 @@ namespace SuccessAppraiserWeb.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GoalDates");
+                name: "DayStateGoalTemplate");
 
             migrationBuilder.DropTable(
-                name: "GoalStateGoalTemplate");
+                name: "GoalDates");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Goals");
+                name: "GoalStates");
 
             migrationBuilder.DropTable(
-                name: "GoalStates");
+                name: "Goals");
 
             migrationBuilder.DropTable(
                 name: "GoalTemplates");

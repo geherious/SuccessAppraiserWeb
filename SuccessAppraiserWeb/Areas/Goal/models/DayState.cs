@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuccessAppraiserWeb.Areas.Goal.models
 {
-    public class GoalState
+    public class DayState
     {
         [Key]
         public int Id { get; set; }

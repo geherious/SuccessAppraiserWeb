@@ -8,18 +8,18 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
 {
     public class TemplateWithStatesInitializer
     {
-        public static (GoalTemplate template, List<GoalState> states) Create(string templateName, Dictionary<string, string> stateParams)
+        public static (GoalTemplate template, List<DayState> states) Create(string templateName, Dictionary<string, string> stateParams)
         {
             GoalTemplate template = new GoalTemplate()
             {
                 Name = templateName,
             };
 
-            List<GoalState> states = new List<GoalState>();
+            List<DayState> states = new List<DayState>();
 
             foreach (KeyValuePair<string, string> kvp in stateParams)
             {
-                GoalState state = new GoalState()
+                DayState state = new DayState()
                 {
                     Name = kvp.Key,
                     Color = kvp.Value,
@@ -44,10 +44,10 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
                             if (!context.GoalTemplates.Where(e => e.Name == tws.Name).Any())
                             {
                                 GoalTemplate template = new GoalTemplate() { Name = tws.Name };
-                                List<GoalState> goalStates = new List<GoalState>();
+                                List<DayState> goalStates = new List<DayState>();
                                 foreach (KeyValuePair<string, string> keyValue in tws.States)
                                 {
-                                    GoalState state = new GoalState();
+                                    DayState state = new DayState();
                                     state.Name = keyValue.Key;
                                     state.Color = keyValue.Value;
                                     goalStates.Add(state);
