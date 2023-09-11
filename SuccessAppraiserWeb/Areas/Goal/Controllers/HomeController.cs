@@ -8,6 +8,7 @@ using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Areas.Identity.models;
 using SuccessAppraiserWeb.Data;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
+using SuccessAppraiserWeb.Data.Goal.Repositories;
 using SuccessAppraiserWeb.Data.Identity;
 using System.Diagnostics;
 
@@ -18,16 +19,20 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
     {
         private readonly CustomUserManager _userManager;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IGoalTemplateRepository _goalTemplateRepository;
 
-        public HomeController(CustomUserManager userManager, ApplicationDbContext dbContext)
+        public HomeController(CustomUserManager userManager, ApplicationDbContext dbContext, IGoalTemplateRepository goalTemplateRepository)
         {
             _userManager = userManager;
             _dbContext = dbContext;
+            _goalTemplateRepository = goalTemplateRepository;
         }
 
         [Authorize]
-        public IActionResult Index()
+        public async  Task<IActionResult> Index()
         {
+            ViewBag.SystemTemplates = await _goalTemplateRepository.GetSystemTemplatesAsync();
+            ViewBag.UserTemplates = await _goalTemplateRepository.GetUserTemplatesAsync(HttpContext.User);
             return View();
         }
 

@@ -107,6 +107,8 @@ namespace SuccessAppraiserWeb
         public static void AddDataServices(IServiceCollection services)
         {
             services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<GoalTemplateRepository>();
+            services.AddScoped<IGoalTemplateRepository, GoalTemplateCachedRepository>();
         }
     }
 }

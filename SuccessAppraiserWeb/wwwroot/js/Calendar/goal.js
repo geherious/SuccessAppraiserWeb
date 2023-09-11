@@ -71,7 +71,7 @@ let goalManager = {
 
             let dayGoalInfo = document.createElement("div");
             dayGoalInfo.className = "row";
-            dayGoalInfo.innerText = "Day Goal: " + obj.DayGoal;
+            dayGoalInfo.innerText = "Day Goal: " + obj.DaysNumber;
             dateInfo.appendChild(dayGoalInfo);
 
             let dayPassedInfo = document.createElement("div");
@@ -229,14 +229,14 @@ let calendarManager = {
         var index = goalManager.selected.id;
         var goal = goalManager.goals[index];
         this.baseConfigure();
-        var startDay = new Date(goal.DateStart);
+        var startDay = new Date(goal.DateStart);    
         var endDay = new Date(startDay);
-        endDay.setDate(endDay.getDate() + goal.DayGoal - 1);
+        endDay.setDate(endDay.getDate() + goal.DaysNumber - 1);
         if (Date.now() <= endDay) endDay = new Date();
         this.calendar.onDateRender(function (date, element, info) {
-            
 
             if (date >= startDay && date <= endDay) {
+                
                 var found = false;
                 for (var item in goal.Dates) {
                     var dateItem = goal.Dates[item];
