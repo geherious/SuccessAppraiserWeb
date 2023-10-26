@@ -8,33 +8,12 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
 {
     public class TemplateWithStatesInitializer
     {
-        public static (GoalTemplate template, List<DayState> states) Create(string templateName, Dictionary<string, string> stateParams)
-        {
-            GoalTemplate template = new GoalTemplate()
-            {
-                Name = templateName,
-            };
-
-            List<DayState> states = new List<DayState>();
-
-            foreach (KeyValuePair<string, string> kvp in stateParams)
-            {
-                DayState state = new DayState()
-                {
-                    Name = kvp.Key,
-                    Color = kvp.Value,
-                };
-                states.Add(state);
-            }
-            template.States.AddRange(states);
-            return (template, states);
-        }
         public static void Initialize(ApplicationDbContext context)
         {
             try
             {
                 using (StreamReader stream = new StreamReader(@"Data\Goal\Initialize\Templates\StandartTemplatesWithStates.json"))
-            {
+                {
                 string json = stream.ReadToEnd();
                 List<TemplateWithStates>? templateWithStates = JsonSerializer.Deserialize<List<TemplateWithStates>>(json);
                 if (templateWithStates != null)
@@ -59,7 +38,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
                             }
                         }
                 }
-            }
+                }
 
             } catch (Exception ex)
             {

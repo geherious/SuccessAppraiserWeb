@@ -34,7 +34,10 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
 
             return await (from g in _dbContext.Goals
                     where g.User.UserName == claimsPrincipal.Identity.Name
-                    select g).Include(g => g.Dates).ThenInclude(d => d.State).ToListAsync();
+                    select g)
+                    .Include(g => g.Template).ThenInclude(t => t.States)
+                    .Include(g => g.Dates.OrderBy(item => item.Date))
+                    .ThenInclude(d => d.State).ToListAsync();
         }
     }
 }

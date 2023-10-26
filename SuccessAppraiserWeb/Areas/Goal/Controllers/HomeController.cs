@@ -33,6 +33,15 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         {
             ViewBag.SystemTemplates = await _goalTemplateRepository.GetSystemTemplatesAsync();
             ViewBag.UserTemplates = await _goalTemplateRepository.GetUserTemplatesAsync(HttpContext.User);
+
+            //DayState easy = _dbContext.GoalStates.Find(1);
+            //GoalItem goal = _dbContext.Goals.Find(7);
+            //GoalDate date = new GoalDate();
+            //date.State = easy;
+            //date.Goal = goal;
+            //date.Date = DateTime.Now;
+            //_dbContext.GoalDates.Add(date);
+            //_dbContext.SaveChanges();
             return View();
         }
 

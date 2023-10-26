@@ -1,6 +1,4 @@
-﻿import { jsCalendar } from './jsCalendar.js';
-
-let goalManager = {
+﻿let goalManager = {
     goals: null,
     getGoalUrl: "/api/goal/usergoals",
     deleteGoalUrl: "/api/goal/deletegoal",
@@ -41,6 +39,7 @@ let goalManager = {
             child.dataset.id = obj.Id;
             child.onclick = this.selectGoalOnCLick;
             container.appendChild(child);
+
 
             // Header
 
@@ -95,11 +94,11 @@ let goalManager = {
             stats.className = "row";
             dayStat.appendChild(stats);
 
-            let statDayInfo = ["Hard", "Avg", "Easy"];
+            let statDayInfo = goalManager.goals[i].Template.States;
             statDayInfo.forEach(function (entry) {
                 let lvl = document.createElement("div");
                 lvl.className = "col-lg text-center";
-                lvl.innerText = entry + ":" + "0";
+                lvl.innerText = entry.Name + ":" + "0";
                 stats.appendChild(lvl);
             })
 
@@ -133,9 +132,8 @@ let goalManager = {
 
             child.appendChild(body);
 
-            this.buildGoal(0);
-
         }
+        this.buildGoal(0);
     },
 
     getDateDiffDay: function (date1, date2) {
@@ -190,98 +188,126 @@ let goalManager = {
 
 }
 
+let painting = {
+    baseColor: "#bababa",
+    paintElement: function (element, color) {
+        element.style.backgroundColor = color;
+        element.style.color = this.invertColor(color, true);
+        let borderColor = this.colorShade(color, -50);
+        element.style.border = `thin solid ${borderColor}`;
+    },
+
+    invertColor: function (hex, bw) {
+        if (hex.indexOf('#') === 0) {
+            hex = hex.slice(1);
+        }
+        // convert 3-digit hex to 6-digits.
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        if (hex.length !== 6) {
+            throw new Error('Invalid HEX color.');
+        }
+        var r = parseInt(hex.slice(0, 2), 16),
+            g = parseInt(hex.slice(2, 4), 16),
+            b = parseInt(hex.slice(4, 6), 16);
+        if (bw) {
+            return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+                ? '#000000'
+                : '#FFFFFF';
+        }
+        // invert color components
+        r = (255 - r).toString(16);
+        g = (255 - g).toString(16);
+        b = (255 - b).toString(16);
+        // pad each with zeros and return
+        return "#" + padZero(r) + padZero(g) + padZero(b);
+    },
+
+    colorShade: function (col, amt) {
+        col = col.replace(/^#/, '')
+        if (col.length === 3) col = col[0] + col[0] + col[1] + col[1] + col[2] + col[2]
+
+        let [r, g, b] = col.match(/.{2}/g);
+        ([r, g, b] = [parseInt(r, 16) + amt, parseInt(g, 16) + amt, parseInt(b, 16) + amt])
+
+        r = Math.max(Math.min(255, r), 0).toString(16)
+        g = Math.max(Math.min(255, g), 0).toString(16)
+        b = Math.max(Math.min(255, b), 0).toString(16)
+
+        const rr = (r.length < 2 ? '0' : '') + r
+        const gg = (g.length < 2 ? '0' : '') + g
+        const bb = (b.length < 2 ? '0' : '') + b
+
+        return `#${rr}${gg}${bb}`
+    }
+}
+
 let calendarManager = {
     calendar: null,
 
     init: function () {
 
-        this.calendar = jsCalendar.new("#calendar", "now", {
-            "monthFormat": "month YYYY",
-            "dayFormat": "DD",
-            "firstDayOfTheWeek": "2"
-        });
+        var options = {
+            actions: {
+                clickDay(event, dates) {
+                },
+            },
+        };
 
-        this.baseConfigure();
-    },
+        this.calendar = new VanillaCalendar('#calendar', options);
+        this.calendar.init();
 
-    baseConfigure: function () {
-        if (this.calendar == null) throw new Error("Calendar must be initialized (not null)");
-
-        this.calendar.onDateRender(function (date, element, info) {
-            // Make weekends bold and red
-            if (!info.isCurrent && (date.getDay() == 0 || date.getDay() == 6)) {
-                element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
-            }
-            else if (!info.isCurrent && (date.getDay() != 0 || date.getDay() != 6)) {
-                element.style.color = (info.isCurrentMonth) ? "black" : '#a6a6a6';
-            }
-
-            element.style.background = null;
-            element.dataset.name = null;
-
-        });
-        this.onDateClick = null;
-        this.calendar.refresh();
     },
 
     configureByGoal: function () {
         if (this.calendar == null) throw new Error("Calendar must be initialized (not null)");
+        if (goalManager.selected.element == null || goalManager.selected.id == null) return;
         var index = goalManager.selected.id;
         var goal = goalManager.goals[index];
-        this.baseConfigure();
-        var startDay = new Date(goal.DateStart);    
+        this.calendar.reset();
+
+        var startDay = new Date(goal.DateStart);  
         var endDay = new Date(startDay);
         endDay.setDate(endDay.getDate() + goal.DaysNumber - 1);
         if (Date.now() <= endDay) endDay = new Date();
-        this.calendar.onDateRender(function (date, element, info) {
 
-            if (date >= startDay && date <= endDay) {
-                
-                var found = false;
-                for (var item in goal.Dates) {
-                    var dateItem = goal.Dates[item];
-                    if (dateItem.Date.getTime() == date.getTime()) {
-                        element.style.background = calendarManager.getColorByName(dateItem.State.Name);
-                        element.dataset.name = dateItem.State.Name;
+        let lastInd = 0;
+
+   
+        this.calendar.actions.getDays = function getDays(day, date, HTMLElement, HTMLButtonElement) {
+            
+            date = new Date(date);
+            date.setHours(0, 0, 0, 0);
+
+            if (endDay >= date && date >= startDay) {
+                let found = false;
+                for (let i = lastInd; i < goal.Dates.length; i++) {
+                    if (goal.Dates[i].Date.getTime() == date.getTime()) {
+                        let color = '#' + goal.Dates[i].State.Color;
+                        painting.paintElement(HTMLButtonElement, color);
+
+                        let state = goal.Dates[i].State.Name;
+                        HTMLButtonElement.dataset.state = state;
+
+                        lastInd = i;
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-
-                    if (info.isCurrent) {
-                        element.style.background = "#98D7F2";
-                    }
-                    else {
-                        element.style.background = "#e3e3e3";
-                    }
+                    painting.paintElement(HTMLButtonElement, painting.baseColor);
                 }
             }
-        });
-
-        this.calendar.onDateClick(function (event, date) {
-            if (date >= startDay && date <= endDay) {
-                var element = event.target.closest('td');
-                if (element.dataset.name == "Hard") alert("aoaoa");
-            }
-        })
-
-        this.calendar.refresh();  
-    },
-
-    getColorByName: function (name) {
-        switch (name) {
-            case "Easy":
-                return "#79EF82";
-            case "Average":
-                return "#F5FF62";
-            case "Hard":
-                return "#FF6462";
-            default:
-                return "#e3e3e3";
         }
-    }
+        this.calendar.update();
 
+
+
+        
+
+
+    }
 };
 calendarManager.init();
 await goalManager.init();
