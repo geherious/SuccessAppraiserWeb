@@ -1,0 +1,34 @@
+﻿            <div class="modal fade" id="CreateStatelessDayModal" tabindex="-1" aria-labelledby="CreateStatelessDayModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="CreateStatelessDayModalLabel">How was your day?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                        <form asp-area="goal" asp-controller="home" asp-action="creategoal" method="post">
+                            @model SuccessAppraiserWeb.Areas.Goal.models.GoalDate
+                          <div class="form-group">
+                            <input hidden type="date" asp-for="Date" class="form-control" id="StatelessDateInput" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="StatelessCommentInput">Comment</label>
+                            <textarea asp-for="Comment" class="form-control" id="StatelessCommentInput" maxlength="512"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="StatelessStateSelect">Condition</label>
+                            <select asp-for="StateId" class="form-control" id="StatelessStateSelect">
+
+                            </select>
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                       </form>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>

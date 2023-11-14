@@ -1,0 +1,46 @@
+﻿              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateGoalModal">Create</button>            
+              <div class="modal fade" id="CreateGoalModal" tabindex="-1" aria-labelledby="CreateGoalModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="CreateGoalModalLabel">Create Goal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                        <form asp-area="goal" asp-controller="home" asp-action="creategoal" method="post">
+                            @model SuccessAppraiserWeb.Areas.Goal.DTO.CreateGoalDto
+                          <div class="form-group">
+                            <label for="goalCreateNameInput">Name</label>
+                            <input type="text" asp-for="Name" class="form-control" id="goalCreateNameInput" autocomplete="off" maxlength="48" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="goalCreateDayNumberInput">Number of days</label>
+                            <input type="number" asp-for="DaysNumber" class="form-control" id="goalCreateDayNumberInput" min="1" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="goalCreateDescriptionInput">Description</label>
+                            <textarea type="text" asp-for="Description" class="form-control" id="goalCreateDescriptionInput" maxlength="255" rows="2"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="goalCreateDayStartInput">Start Day</label>
+                            <input type="date" asp-for="DateStart" class="form-control" id="goalCreateDayStartInput" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="goalCreateTemplateSelect">Template</label>
+                            <select asp-for="TemplateId" class="form-select" id="goalCreateTemplateSelect">
+                                        @foreach (SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate sysTemplate in ViewBag.SystemTemplates)
+                                        {
+                                            <option value="@sysTemplate.Id">@sysTemplate.Name</option>
+                                        }
+                            </select>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                       </form>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>

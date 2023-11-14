@@ -186,6 +186,10 @@
         goalManager.buildGoal(index);
     },
 
+    //createModularForDay: function () {
+
+    //}
+
 }
 
 let painting = {
@@ -251,6 +255,9 @@ let calendarManager = {
         var options = {
             actions: {
                 clickDay(event, dates) {
+                    if (event.target.dataset.state == "stateless") {
+                        calendarManager.openStatelessModal(event, dates)
+                    }
                 },
             },
         };
@@ -275,12 +282,15 @@ let calendarManager = {
         let lastInd = 0;
 
    
-        this.calendar.actions.getDays = function getDays(day, date, HTMLElement, HTMLButtonElement) {
+        this.calendar.actions.getDays = function getDays(day, date, HTMLElement, HTMLButtonElement)
+        {
+            HTMLButtonElement.dataset.state = null;
             
             date = new Date(date);
             date.setHours(0, 0, 0, 0);
 
             if (endDay >= date && date >= startDay) {
+                HTMLButtonElement.dataset.state = "stateless"
                 let found = false;
                 for (let i = lastInd; i < goal.Dates.length; i++) {
                     if (goal.Dates[i].Date.getTime() == date.getTime()) {
@@ -307,7 +317,22 @@ let calendarManager = {
         
 
 
-    }
+    },
+    openStatelessModal: function (event, dates) {
+        var modal = new bootstrap.Modal(document.getElementById('CreateStatelessDayModal'));
+        document.getElementById("StatelessDateInput").value = dates[0];
+
+        let selectEl = document.getElementById('StatelessStateSelect');
+        let states = goalManager.goals[goalManager.selected.id].Template.States;
+        for (let i = 0; i < states.length; i++) {
+            let opt = document.createElement('option');
+            opt.value = states[i].Id;
+            opt.text = states[i].Name;
+            selectEl.appendChild(opt);
+        }
+
+        modal.show();
+    },
 };
 calendarManager.init();
 await goalManager.init();

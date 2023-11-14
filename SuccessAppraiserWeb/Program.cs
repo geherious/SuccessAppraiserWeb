@@ -1,3 +1,5 @@
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -67,7 +69,13 @@ namespace SuccessAppraiserWeb
                 options.SlidingExpiration = true;
             });
 
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
             AddDataServices(builder.Services);
+
 
             var app = builder.Build();
 

@@ -2,57 +2,14 @@
     ViewData["Title"] = "Goal";
 }
 <div class="row container-fluid align-items-center justify-content-center">
-    <div class="d-flex col align-items-start justify-content-center h-100 align-self-start" id="calendar"></div>
+    <div class="d-flex col align-items-start justify-content-center h-100 align-self-start">
+        @await Html.PartialAsync("CreateStatelessDateModal")
+        <div class="d-flex col align-items-start justify-content-center h-100 align-self-start" id="calendar"></div>
+    </div>
     <div class="goals-container col-md d-flex flex-column">
         <div class="mb-3 text-center d-flex flex-row justify-content-between">
             <div>Goals</div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateModal">Create</button>
-            <!-- Modal -->
-            <div class="modal fade" id="CreateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Goal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                        <form asp-area="goal" asp-controller="home" asp-action="creategoal" method="post">
-                            @model SuccessAppraiserWeb.Areas.Goal.models.GoalItem
-                          <div class="form-group">
-                            <label for="nameInput">Name</label>
-                            <input type="text" asp-for="Name" class="form-control" id="nameInput" autocomplete="off" maxlength="48" required>
-                          </div>
-                          <div class="form-group">
-                            <label for="dayNumberInput">Number of days</label>
-                            <input type="number" asp-for="DaysNumber" class="form-control" id="dayNumberInput" min="1" required>
-                          </div>
-                          <div class="form-group">
-                            <label for="descriptionInput">Description</label>
-                            <textarea type="text" asp-for="Description" class="form-control" id="descriptionInput" maxlength="255" rows="2"></textarea>
-                          </div>
-                          <div class="form-group">
-                            <label for="dayStartInput">Start Day</label>
-                            <input type="date" asp-for="DateStart" class="form-control" id="dayStartInput" required>
-                          </div>
-                          <div class="form-group">
-                            <label for="TemplateSelect">Template</label>
-                            <select asp-for="TemplateId" class="form-select" id="TemplateSelect">
-                                        @foreach (SuccessAppraiserWeb.Areas.Goal.models.GoalTemplate sysTemplate in ViewBag.SystemTemplates)
-                                        {
-                                            <option value="@sysTemplate.Id">@sysTemplate.Name</option>
-                                        }
-                            </select>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                          </div>
-                       </form>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
+            @await Html.PartialAsync("CreateGoalModal")
 
   
 
