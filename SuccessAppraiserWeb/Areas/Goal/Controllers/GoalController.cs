@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using SuccessAppraiserWeb.Data.Identity;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using AutoMapper;
 using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using SuccessAppraiserWeb.Areas.Goal.DTO;
+using SuccessAppraiserWeb.Data;
 
 namespace SuccessAppraiserWeb.Areas.Goal.Controllers
 {
@@ -16,11 +20,15 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
     {
         private readonly CustomUserManager _userManager;
         private readonly IGoalRepository _goalRepository;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public GoalController(CustomUserManager userManager, IGoalRepository goalRepository)
+        public GoalController(CustomUserManager userManager, IGoalRepository goalRepository, ApplicationDbContext dbContext, IMapper mapper)
         {
             _userManager = userManager;
             _goalRepository = goalRepository;
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         [Authorize]
@@ -41,6 +49,32 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         {
             await _goalRepository.DeleteByUser(HttpContext.User, Id);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateGoal([FromForm] CreateGoalDto model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user == null) return Unauthorized();
+
+            var newGoal = _mapper.Map<CreateGoalDto, GoalItem>(model);
+
+            newGoal.User = user;
+            _dbContext.Goals.Add(newGoal);
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToActionPermanent("Index", controllerName: "Home", new {area = "Goal"});
+        }
+
+        public async Task<IActionResult> CreateGoalDate([FromForm] CreateGoalDateDto model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            return Ok(model);
+
         }
     }
 }

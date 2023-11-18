@@ -7,6 +7,7 @@
     init: async function () {
         await goalManager.getJson();
         goalManager.createGoalList();
+
     },
 
     getJson: async function () {
@@ -22,7 +23,7 @@
                 });
             }
         } else {
-            alert("Ошибка получения списка: " + response.status);
+            alert(`Ошибка получения списка: ${response.status}`);
         }
         console.log(this.goals)
     },
@@ -70,13 +71,13 @@
 
             let dayGoalInfo = document.createElement("div");
             dayGoalInfo.className = "row";
-            dayGoalInfo.innerText = "Day Goal: " + obj.DaysNumber;
+            dayGoalInfo.innerText = `Day Goal: ${obj.DaysNumber}`;
             dateInfo.appendChild(dayGoalInfo);
 
             let dayPassedInfo = document.createElement("div");
             dayPassedInfo.className = "row";
             let dateDiff = this.getDateDiffDay(new Date(), new Date(obj.DateStart));
-            dayPassedInfo.innerText = "Day Passed: " + dateDiff;
+            dayPassedInfo.innerText = `Day Passed: ${dateDiff}`;
             dateInfo.appendChild(dayPassedInfo);
 
             //Body.DayStat
@@ -147,7 +148,7 @@
         const btn = e.target.closest('.delete-btn');
         btn.disabled = true;
 
-        let response = await fetch("/api/goal/deletegoal?id=" + elem.dataset.id, {
+        let response = await fetch(`/api/goal/deletegoal?id=${elem.dataset.id}`, {
             method: 'POST',
 
         });
@@ -156,7 +157,9 @@
             elem.parentNode.removeChild(elem);
         }
         else {
-            alert("Ошибка удаления");
+            // TODO: Toast
+            let toastEl = new bootstrap.Toast(document.getElementById("DeleteGoalErrorToast"));
+            toastEl.show();
         }
         if (response.status > 0) {
             goalManager.selected.element = null;
@@ -180,15 +183,12 @@
     },
 
     selectGoalOnCLick: function (e) {
-        const child = e.target.closest('.goal');
+        const child = e.target.closest(".goal");
         var parent = child.parentNode;
         var index = Array.prototype.indexOf.call(parent.children, child);
         goalManager.buildGoal(index);
-    },
+    }
 
-    //createModularForDay: function () {
-
-    //}
 
 }
 
@@ -294,7 +294,7 @@ let calendarManager = {
                 let found = false;
                 for (let i = lastInd; i < goal.Dates.length; i++) {
                     if (goal.Dates[i].Date.getTime() == date.getTime()) {
-                        let color = '#' + goal.Dates[i].State.Color;
+                        let color = `#${goal.Dates[i].State.Color}`;
                         painting.paintElement(HTMLButtonElement, color);
 
                         let state = goal.Dates[i].State.Name;
@@ -322,6 +322,7 @@ let calendarManager = {
         var modal = new bootstrap.Modal(document.getElementById('CreateStatelessDayModal'));
         document.getElementById("StatelessDateInput").value = dates[0];
 
+        // Add select options
         let selectEl = document.getElementById('StatelessStateSelect');
         let states = goalManager.goals[goalManager.selected.id].Template.States;
         for (let i = 0; i < states.length; i++) {
@@ -331,10 +332,12 @@ let calendarManager = {
             selectEl.appendChild(opt);
         }
 
+        // Add goal id
+        document.getElementById("StatelessGoalIdInput").value = goalManager.selected.id;
+        console.log(goalManager.selected.id);
+
         modal.show();
     },
 };
 calendarManager.init();
 await goalManager.init();
-
-

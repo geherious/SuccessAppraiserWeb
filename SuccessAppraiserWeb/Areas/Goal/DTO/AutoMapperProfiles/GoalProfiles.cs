@@ -8,6 +8,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.DTO.AutoMapperProfiles
         public GoalProfiles()
         {
             CreateMap<GoalItem, CreateGoalDto>().ReverseMap();
+            CreateMap<GoalDate, CreateGoalDateDto>().ReverseMap();
         }
     }
 }

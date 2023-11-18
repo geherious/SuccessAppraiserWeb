@@ -7,7 +7,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                        <form asp-area="goal" asp-controller="home" asp-action="creategoal" method="post">
+                        <form action="api/Goal/CreateGoal" method="post">
                             @model SuccessAppraiserWeb.Areas.Goal.DTO.CreateGoalDto
                           <div class="form-group">
                             <label for="goalCreateNameInput">Name</label>

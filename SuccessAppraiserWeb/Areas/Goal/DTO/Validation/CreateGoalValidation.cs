@@ -15,11 +15,11 @@ namespace SuccessAppraiserWeb.Areas.Goal.DTO.Validation
                 .MaximumLength(255);
 
             RuleFor(x => x.DaysNumber)
-                .NotEmpty()
+                .NotNull()
                 .GreaterThanOrEqualTo(1);
 
             RuleFor(x => x.TemplateId)
-                .NotEmpty();
+                .NotNull();
 
             RuleFor(x => x.DateStart)
                 .NotEmpty();

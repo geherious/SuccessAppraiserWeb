@@ -10,6 +10,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.models
         [Required]
         [Column(TypeName = "Date")]
         public DateTime Date { get; set; }
+        [MaxLength(1024)]
         public string? Comment { get; set; }
 
         [Required]
