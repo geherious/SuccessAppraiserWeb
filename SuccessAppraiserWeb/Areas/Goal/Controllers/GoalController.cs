@@ -61,7 +61,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
 
             if (user == null) return Unauthorized();
 
-            var newGoal = _mapper.Map<CreateGoalDto, GoalItem>(model);
+            GoalItem newGoal = _mapper.Map<CreateGoalDto, GoalItem>(model);
 
             newGoal.User = user;
             _dbContext.Goals.Add(newGoal);
@@ -70,10 +70,14 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
             return RedirectToActionPermanent("Index", controllerName: "Home", new {area = "Goal"});
         }
 
-        public async Task<IActionResult> CreateGoalDate([FromForm] CreateGoalDateDto model)
+        public async Task<IActionResult> CreateGoalDate([FromBody] CreateGoalDateDto model)
         {
             if (!ModelState.IsValid) return BadRequest();
-            return Ok(model);
+
+            GoalDate newGoalDate = _mapper.Map<CreateGoalDateDto, GoalDate>(model);
+            _dbContext.GoalDates.Add(newGoalDate);
+            await _dbContext.SaveChangesAsync();
+            return Ok(new {id = newGoalDate.Id});
 
         }
     }

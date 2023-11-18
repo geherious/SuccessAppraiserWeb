@@ -12,7 +12,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.DTO.Validation
                 .MaximumLength(1024);
 
             RuleFor(x => x.Date)
-                .NotEmpty();
+                .NotNull();
 
             RuleFor(x => x.GoalId)
                 .NotNull();

@@ -12,12 +12,12 @@
 
     getJson: async function () {
         if (this.goals != null) return null;
-        let response = await fetch(this.getGoalUrl);
+        const response = await fetch(this.getGoalUrl);
 
         if (response.ok) {
             this.goals = await response.json();
 
-            for (var item in this.goals) {
+            for (let item in this.goals) {
                 this.goals[item].Dates.forEach(function (element) {
                     element.Date = new Date(element.Date);
                 });
@@ -97,7 +97,7 @@
 
             let statDayInfo = goalManager.goals[i].Template.States;
             statDayInfo.forEach(function (entry) {
-                let lvl = document.createElement("div");
+                const lvl = document.createElement("div");
                 lvl.className = "col-lg text-center";
                 lvl.innerText = entry.Name + ":" + "0";
                 stats.appendChild(lvl);
@@ -138,8 +138,8 @@
     },
 
     getDateDiffDay: function (date1, date2) {
-        let diff = Math.abs(date1.getTime() - date2.getTime());
-        let days = Math.ceil(diff / (1000 * 3600 * 24));
+        const diff = Math.abs(date1.getTime() - date2.getTime());
+        const days = Math.ceil(diff / (1000 * 3600 * 24));
         return days;
     },
 
@@ -148,7 +148,7 @@
         const btn = e.target.closest('.delete-btn');
         btn.disabled = true;
 
-        let response = await fetch(`/api/goal/deletegoal?id=${elem.dataset.id}`, {
+        const response = await fetch(`/api/goal/deletegoal?id=${elem.dataset.id}`, {
             method: 'POST',
 
         });
@@ -158,7 +158,7 @@
         }
         else {
             // TODO: Toast
-            let toastEl = new bootstrap.Toast(document.getElementById("DeleteGoalErrorToast"));
+            const toastEl = new bootstrap.Toast(document.getElementById("DeleteGoalErrorToast"));
             toastEl.show();
         }
         if (response.status > 0) {
@@ -172,7 +172,7 @@
     buildGoal: function (index) {
         if (this.goals.length == 0 || index >= this.goals.length) return;
 
-        var container = document.getElementById("goals");
+        const container = document.getElementById("goals");
         if (this.selected.element != null) this.selected.element.classList.remove("goal-selected");
         this.selected.element = container.children[index];
         this.selected.element.classList.add("goal-selected");
@@ -184,8 +184,8 @@
 
     selectGoalOnCLick: function (e) {
         const child = e.target.closest(".goal");
-        var parent = child.parentNode;
-        var index = Array.prototype.indexOf.call(parent.children, child);
+        const parent = child.parentNode;
+        const index = Array.prototype.indexOf.call(parent.children, child);
         goalManager.buildGoal(index);
     }
 
@@ -197,7 +197,7 @@ let painting = {
     paintElement: function (element, color) {
         element.style.backgroundColor = color;
         element.style.color = this.invertColor(color, true);
-        let borderColor = this.colorShade(color, -50);
+        const borderColor = this.colorShade(color, -50);
         element.style.border = `thin solid ${borderColor}`;
     },
 
@@ -252,11 +252,11 @@ let calendarManager = {
 
     init: function () {
 
-        var options = {
+        const options = {
             actions: {
                 clickDay(event, dates) {
                     if (event.target.dataset.state == "stateless") {
-                        calendarManager.openStatelessModal(event, dates)
+                        calendarManager.openStatelessModal(event, dates);
                     }
                 },
             },
@@ -270,7 +270,7 @@ let calendarManager = {
     configureByGoal: function () {
         if (this.calendar == null) throw new Error("Calendar must be initialized (not null)");
         if (goalManager.selected.element == null || goalManager.selected.id == null) return;
-        var index = goalManager.selected.id;
+        const index = goalManager.selected.id;
         var goal = goalManager.goals[index];
         this.calendar.reset();
 
@@ -294,10 +294,10 @@ let calendarManager = {
                 let found = false;
                 for (let i = lastInd; i < goal.Dates.length; i++) {
                     if (goal.Dates[i].Date.getTime() == date.getTime()) {
-                        let color = `#${goal.Dates[i].State.Color}`;
+                        const color = `#${goal.Dates[i].State.Color}`;
                         painting.paintElement(HTMLButtonElement, color);
 
-                        let state = goal.Dates[i].State.Name;
+                        const state = goal.Dates[i].State.Name;
                         HTMLButtonElement.dataset.state = state;
 
                         lastInd = i;
@@ -319,25 +319,55 @@ let calendarManager = {
 
     },
     openStatelessModal: function (event, dates) {
-        var modal = new bootstrap.Modal(document.getElementById('CreateStatelessDayModal'));
+        const modalElement = document.getElementById('CreateStatelessDayModal');
+        const modal = new bootstrap.Modal(modalElement);
         document.getElementById("StatelessDateInput").value = dates[0];
+        console.log(document.getElementById("StatelessDateInput").value);
 
         // Add select options
-        let selectEl = document.getElementById('StatelessStateSelect');
-        let states = goalManager.goals[goalManager.selected.id].Template.States;
+        const selectEl = document.getElementById('StatelessStateSelect');
+        const states = goalManager.goals[goalManager.selected.id].Template.States;
         for (let i = 0; i < states.length; i++) {
-            let opt = document.createElement('option');
+            const opt = document.createElement('option');
             opt.value = states[i].Id;
             opt.text = states[i].Name;
             selectEl.appendChild(opt);
         }
 
         // Add goal id
-        document.getElementById("StatelessGoalIdInput").value = goalManager.selected.id;
-        console.log(goalManager.selected.id);
+        document.getElementById("StatelessGoalIdInput").value = goalManager.goals[goalManager.selected.id].Id;
+
+        calendarManager.handleStatelessModalSubmit(modalElement, modal);
 
         modal.show();
     },
+    handleStatelessModalSubmit: function (modalElement, modal) {
+
+        const form = modalElement.querySelector("form");
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const data = {};
+            for (const pair of new FormData(form)) {
+                data[pair[0]] = pair[1];
+            }
+
+            const response = await fetch("/api/goal/CreateGoalDate",
+                {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+            if (!response.ok) {
+                modal.hide();
+                bootstrap.Toast.getOrCreateInstance(document.getElementById("CreateGoalDateErrorToast")).show();
+            } else {
+                // TODO: handle ok response in stateless modal submit
+            }
+        });
+    }
 };
 calendarManager.init();
 await goalManager.init();
