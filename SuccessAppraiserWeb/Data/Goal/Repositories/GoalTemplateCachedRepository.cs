@@ -2,6 +2,7 @@
 using SuccessAppraiserWeb.Areas.Goal.models;
 using SuccessAppraiserWeb.Data.Goal.Interfaces;
 using System.Security.Claims;
+using System.Threading;
 
 namespace SuccessAppraiserWeb.Data.Goal.Repositories
 {
@@ -16,7 +17,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
             _cache = cache;
         }
 
-        public async Task<List<GoalTemplate>> GetSystemTemplatesAsync()
+        public async Task<List<GoalTemplate>> GetSystemTemplatesAsync(CancellationToken cancellationToken)
         {
             string key = "template-system";
             return await _cache.GetOrCreateAsync(
@@ -24,15 +25,15 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
                 entry =>
                 {
                     entry.SlidingExpiration = TimeSpan.FromHours(2);
-                    return _repository.GetSystemTemplatesAsync();
+                    return _repository.GetSystemTemplatesAsync(cancellationToken);
                 }) ?? new List<GoalTemplate>();
         }
 
-        public async Task<List<GoalTemplate>> GetUserTemplatesAsync(ClaimsPrincipal claimsPrincipal)
+        public async Task<List<GoalTemplate>> GetUserTemplatesAsync(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
             if (claimsPrincipal.Identity == null) return new List<GoalTemplate>();
 
-            return await _repository.GetUserTemplatesAsync(claimsPrincipal);
+            return await _repository.GetUserTemplatesAsync(claimsPrincipal, cancellationToken);
         }
     }
 }

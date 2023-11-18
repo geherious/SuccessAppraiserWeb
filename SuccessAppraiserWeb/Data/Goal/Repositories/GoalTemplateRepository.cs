@@ -13,21 +13,21 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
         {
             this._dbContext = dbContext;
         }
-        public async Task<List<GoalTemplate>> GetSystemTemplatesAsync()
+        public async Task<List<GoalTemplate>> GetSystemTemplatesAsync(CancellationToken cancellationToken)
         {
             return await (from g in _dbContext.GoalTemplates
                           where g.User == null
                           orderby g.Name
-                          select g).ToListAsync();
+                          select g).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<GoalTemplate>> GetUserTemplatesAsync(ClaimsPrincipal claimsPrincipal)
+        public async Task<List<GoalTemplate>> GetUserTemplatesAsync(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
             if (claimsPrincipal.Identity == null) return new List<GoalTemplate>();
 
             return await (from g in _dbContext.GoalTemplates
                           where g.User.UserName == claimsPrincipal.Identity.Name
-                          select g).ToListAsync();
+                          select g).ToListAsync(cancellationToken);
         }
     }
 }

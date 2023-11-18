@@ -5,8 +5,8 @@ namespace SuccessAppraiserWeb.Data.Goal.Interfaces
 {
     public interface IGoalRepository
     {
-        Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id);
+        Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id, CancellationToken cancellationToken = default);
 
-        Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal);
+        Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default);
     }
 }

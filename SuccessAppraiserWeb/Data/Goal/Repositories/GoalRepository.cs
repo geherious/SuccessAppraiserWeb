@@ -14,11 +14,11 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
             _dbContext = dbContext;
         }
 
-        async public Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int id)
+        async public Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int id, CancellationToken cancellationToken)
         {
-            List<GoalItem> goals = await GetGoalsByUserAsync(claimsPrincipal);
+            List<GoalItem> goals = await GetGoalsByUserAsync(claimsPrincipal, cancellationToken);
 
-            var filtered = await _dbContext.Goals.FindAsync(id);
+            var filtered = await _dbContext.Goals.FindAsync(id, cancellationToken);
 
             if (filtered != null)
             {
@@ -28,7 +28,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
 
         }
 
-        async public Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal)
+        async public Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
             if (claimsPrincipal.Identity == null) { return new List<GoalItem>(); }
 
@@ -37,7 +37,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Repositories
                     select g)
                     .Include(g => g.Template).ThenInclude(t => t.States)
                     .Include(g => g.Dates.OrderBy(item => item.Date))
-                    .ThenInclude(d => d.State).ToListAsync();
+                    .ThenInclude(d => d.State).ToListAsync(cancellationToken);
         }
     }
 }
