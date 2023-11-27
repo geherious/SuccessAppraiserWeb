@@ -153,19 +153,19 @@
 
         });
         if (response.ok) {
-            btn.disabled = false;
-            elem.parentNode.removeChild(elem);
+            btn.disabled = false;   
+            elem.parentElement.removeChild(elem);
+            goalManager.goals.splice(goalManager.selected.id, 1);
+            goalManager.selected.element = null;
+            goalManager.selected.id = null;
+            goalManager.buildGoal(0);
         }
         else {
             // TODO: Toast
             const toastEl = new bootstrap.Toast(document.getElementById("DeleteGoalErrorToast"));
             toastEl.show();
         }
-        if (response.status > 0) {
-            goalManager.selected.element = null;
-            goalManager.selected.id = null;
-            goalManager.buildGoal(0);
-        }
+        calendarManager.configureByGoal();
 
     },
 
@@ -250,8 +250,7 @@ let painting = {
 let calendarManager = {
     calendar: null,
 
-    init: function () {
-
+    initCalendar: function () {
         const options = {
             actions: {
                 clickDay(event, dates) {
@@ -262,36 +261,48 @@ let calendarManager = {
             },
         };
 
+
+
         this.calendar = new VanillaCalendar('#calendar', options);
         this.calendar.init();
+    },
 
+    AddStatelessModalResetListener: function () {
+        let modalEl = document.getElementById("CreateStatelessDayModal");
+        modalEl.addEventListener("hidden.bs.modal", function() {
+            modalEl.querySelector("form").reset();
+        });
+    },
+
+    init: function () {
+        calendarManager.AddStatelessModalResetListener();
+        calendarManager.initCalendar();
     },
 
     configureByGoal: function () {
         if (this.calendar == null) throw new Error("Calendar must be initialized (not null)");
-        if (goalManager.selected.element == null || goalManager.selected.id == null) return;
+        if (goalManager.selected.element == null || goalManager.selected.id == null) {
+            calendarManager.initCalendar();
+            return;
+        }
         const index = goalManager.selected.id;
-        var goal = goalManager.goals[index];
-        this.calendar.reset();
+        let goal = goalManager.goals[index];
 
         var startDay = new Date(goal.DateStart);  
         var endDay = new Date(startDay);
         endDay.setDate(endDay.getDate() + goal.DaysNumber - 1);
         if (Date.now() <= endDay) endDay = new Date();
 
-        let lastInd = 0;
-
-   
-        this.calendar.actions.getDays = function getDays(day, date, HTMLElement, HTMLButtonElement)
-        {
+        this.calendar.actions.getDays = function (day, date, HTMLElement, HTMLButtonElement) {
             HTMLButtonElement.dataset.state = null;
-            
             date = new Date(date);
             date.setHours(0, 0, 0, 0);
 
+
             if (endDay >= date && date >= startDay) {
-                HTMLButtonElement.dataset.state = "stateless"
+                HTMLButtonElement.dataset.state = "stateless";
                 let found = false;
+                let lastInd = 0;
                 for (let i = lastInd; i < goal.Dates.length; i++) {
                     if (goal.Dates[i].Date.getTime() == date.getTime()) {
                         const color = `#${goal.Dates[i].State.Color}`;
@@ -305,12 +316,13 @@ let calendarManager = {
                         break;
                     }
                 }
+
                 if (!found) {
                     painting.paintElement(HTMLButtonElement, painting.baseColor);
                 }
             }
         }
-        this.calendar.update();
+        this.calendar.reset();
 
 
 
@@ -320,9 +332,8 @@ let calendarManager = {
     },
     openStatelessModal: function (event, dates) {
         const modalElement = document.getElementById('CreateStatelessDayModal');
-        const modal = new bootstrap.Modal(modalElement);
-        document.getElementById("StatelessDateInput").value = dates[0];
-        console.log(document.getElementById("StatelessDateInput").value);
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        document.getElementById("StatelessDateInput").value = event.target.closest("button").dataset.calendarDay;
 
         // Add select options
         const selectEl = document.getElementById('StatelessStateSelect');
@@ -342,10 +353,13 @@ let calendarManager = {
         modal.show();
     },
     handleStatelessModalSubmit: function (modalElement, modal) {
-
         const form = modalElement.querySelector("form");
+
         form.addEventListener("submit", async function (event) {
+
+
             event.preventDefault();
+
             const data = {};
             for (const pair of new FormData(form)) {
                 data[pair[0]] = pair[1];
@@ -364,10 +378,54 @@ let calendarManager = {
                 modal.hide();
                 bootstrap.Toast.getOrCreateInstance(document.getElementById("CreateGoalDateErrorToast")).show();
             } else {
-                // TODO: handle ok response in stateless modal submit
+                let goal = goalManager.goals.find(g => g.Id == data["GoalId"]);
+                const responseData = await response.json();
+                let newState = goal.Template.States.find(s => s.Id == data["StateId"]);
+                let newDate = new Date(data["Date"]);
+                newDate.setHours(0, 0, 0, 0);
+                let newGoalDate = {
+                    Id: responseData.id,
+                    Date: newDate,
+                    Comment: data["Comment"],
+                    Goal: null,
+                    GoalId: Number(data["GoalId"]),
+                    StateId: Number(data["StateId"]),
+                    State: newState
+                };
+
+                goal.Dates.splice(binarySearch(goal.Dates, newGoalDate, compareGoalDates), 0, newGoalDate);
+                calendarManager.configureByGoal();
+                modal.hide();
+
             }
         });
     }
 };
+
+function binarySearch(ar, el, compareFn) {
+    if (ar.length == 0) return 0;
+    if (el.Date < ar[0].Date)
+        return 0;
+    if (el.Date > ar[ar.length - 1].Date)
+        return ar.length;
+    var m = 0;
+    var n = ar.length - 1;
+    while (m <= n) {
+        var k = (n + m) >> 1;
+        var cmp = compareFn(el, ar[k]);
+        if (cmp > 0) {
+            m = k + 1;
+        } else if (cmp < 0) {
+            n = k - 1;
+        } else {
+            return k;
+        }
+    }
+    return -m - 1;
+}
+
+function compareGoalDates(date1, date2) {
+    return date1.Date > date2.Date;
+}
 calendarManager.init();
 await goalManager.init();

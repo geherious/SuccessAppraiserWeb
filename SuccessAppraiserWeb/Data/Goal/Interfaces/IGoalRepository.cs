@@ -8,5 +8,8 @@ namespace SuccessAppraiserWeb.Data.Goal.Interfaces
         Task DeleteByUser(ClaimsPrincipal claimsPrincipal, int Id, CancellationToken cancellationToken = default);
 
         Task<List<GoalItem>> GetGoalsByUserAsync(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken = default);
+
+        Task<bool> UserHasGoal(ClaimsPrincipal claimsPrincipal, int goalId,CancellationToken cancellationToken = default);
+        Task<bool> UserGoalHasDate(ClaimsPrincipal claimsPrincipal, int goalId, DateTime date,  CancellationToken cancellationToken = default);
     }
 }

@@ -55,7 +55,7 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateGoal([FromForm] CreateGoalDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return NotFound();
 
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -72,8 +72,10 @@ namespace SuccessAppraiserWeb.Areas.Goal.Controllers
 
         public async Task<IActionResult> CreateGoalDate([FromBody] CreateGoalDateDto model)
         {
+            //TODO: verify if date in diapason 
             if (!ModelState.IsValid) return BadRequest();
-
+            if (!await _goalRepository.UserHasGoal(HttpContext.User, model.GoalId)) return NotFound();
+            if (await _goalRepository.UserGoalHasDate(HttpContext.User, model.GoalId, model.Date)) return NotFound("Date already exists");
             GoalDate newGoalDate = _mapper.Map<CreateGoalDateDto, GoalDate>(model);
             _dbContext.GoalDates.Add(newGoalDate);
             await _dbContext.SaveChangesAsync();
