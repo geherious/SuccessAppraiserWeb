@@ -6,5 +6,7 @@ services:
     build:
       context: .
       dockerfile: SuccessAppraiserWeb/Dockerfile
+    dns:
+     - 8.8.8.8
   proxy:
     image: nginx:mainline  
