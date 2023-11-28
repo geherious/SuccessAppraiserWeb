@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["SuccessAppraiserWeb/SuccessAppraiserWeb.csproj", "SuccessAppraiserWeb/"]
-RUN dotnet nuget locals all –clear && dotnet restore "SuccessAppraiserWeb/SuccessAppraiserWeb.csproj"
+RUN nuget locals all -clear && dotnet restore "SuccessAppraiserWeb/SuccessAppraiserWeb.csproj"
 COPY . .
 WORKDIR "/src/SuccessAppraiserWeb"
 RUN dotnet build "SuccessAppraiserWeb.csproj" -c Release -o /app/build
