@@ -12,7 +12,7 @@ namespace SuccessAppraiserWeb.Data.Goal.Initialize.Templates
         {
             try
             {
-                using (StreamReader stream = new StreamReader(@"Data\Goal\Initialize\Templates\StandartTemplatesWithStates.json"))
+                using (StreamReader stream = new StreamReader(@"Data/Goal/Initialize/Templates/StandartTemplatesWithStates.json"))
                 {
                 string json = stream.ReadToEnd();
                 List<TemplateWithStates>? templateWithStates = JsonSerializer.Deserialize<List<TemplateWithStates>>(json);

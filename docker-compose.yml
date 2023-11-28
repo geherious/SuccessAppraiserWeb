@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  backend:
+    image: geherious/success-appraiser-web
+    build:
+      context: .
+      dockerfile: SuccessAppraiserWeb/Dockerfile
+  proxy:
+    image: nginx:mainline  

@@ -25,8 +25,18 @@ namespace SuccessAppraiserWeb
             builder.Host.UseSerilog((ctx, lc) => lc
             .WriteTo.Console());
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+            string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            string connectionString;
+            Console.WriteLine(environment);
+            if (environment == "Development")
+            {
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            }
+            else
+            {
+                connectionString = builder.Configuration.GetConnectionString("MySQLProdConnection") ?? throw new InvalidOperationException("Connection string 'MySQLProdConnection' not found.");
+            }
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString,
                 new MySqlServerVersion(new Version(8, 0, 33))));
@@ -86,12 +96,12 @@ namespace SuccessAppraiserWeb
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseExceptionHandler("/Home/Error");
+                //// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                //app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
