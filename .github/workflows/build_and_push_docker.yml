@@ -37,4 +37,6 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            touch NewFile
+            cd server/SuccessAppraiserWeb/
+            git pull
+            sudo docker compose up --build -d
